@@ -62,6 +62,29 @@ class Entry:
 
 class DataReader:
     
+    """
+    Usage Example:
+        Construct:
+            D = DataReader("Data/train_images", "Data/train.csv")
+        Use case 1 recognition (train):
+            for d in D.data:
+                for c in d.characters:
+                    input_ = c.image
+                    output = c.name
+                    model.fit(input_, output)
+        Use case 2 cutting (train):
+            for d in D,data:
+                input_ = d.image
+                output = [(c.x, c.y, c.height, c.width) for c in d.characters]
+                model.fit(input_, output)
+        Use case 3 cutting and recognition (test):
+                for d in D,data:
+                    input_ = d.image
+                    coordinate = model_cut.eval(input_)
+                    for c in coordinate:
+                        character_img = cut_image(d.image, *c)
+                        character = model_rec.eval(character_img)
+    """
     def __init__(self, image_path, label_path):
 
         with open(label_path) as fp:
