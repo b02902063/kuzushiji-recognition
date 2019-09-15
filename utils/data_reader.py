@@ -63,7 +63,7 @@ class Entry:
 class DataReader:
     
     """
-    Usage Example:
+    Usage Examples:
         Construct:
             D = DataReader("Data/train_images", "Data/train.csv")
         Use case 1 recognition (train):
@@ -73,12 +73,12 @@ class DataReader:
                     output = c.name
                     model.fit(input_, output)
         Use case 2 cutting (train):
-            for d in D,data:
+            for d in D.data:
                 input_ = d.image
                 output = [(c.x, c.y, c.height, c.width) for c in d.characters]
                 model.fit(input_, output)
         Use case 3 cutting and recognition (test):
-                for d in D,data:
+                for d in D.data:
                     input_ = d.image
                     coordinate = model_cut.eval(input_)
                     for c in coordinate:
