@@ -4,16 +4,53 @@ import os
 import csv
 
 
+def cut_image(image, x, y ,height, width):
+    return image[y:y+width, x:x+height]
+
+class Character:
+
+    def __init__(self, name, whole_image, x, y, height, width):
+        self._image = cut_image(whole_image, x, y, height, width)
+        self._x = x
+        self._y = y
+        self._height = height
+        self._width = width
+        self._name = name
+        
+    @property
+    def image(self):
+        return self._image
+        
+    @property
+    def x(self):
+        return self._x
+        
+    @property
+    def y(self):
+        return self._y
+        
+    @property
+    def height(self):
+        return self._height
+        
+    @property
+    def width(self):
+        return self._width
+        
+    @property
+    def name(self):
+        return self._name
+
 class Entry:
     
-    def __init__(self, image, label, fileanme):
+    def __init__(self, image, characters, fileanme):
         self._image = image
-        self._label = label
+        self._characters = characters
         self._filename = filename
         
     @property
-    def label(self):
-        return self._label
+    def characters(self):
+        return self._characters
         
     @property
     def image(self):
@@ -31,19 +68,15 @@ class DataReader:
             content = csv.reader(fp)
             content = [c for c in content]
         
-        image_dict = dict()
+        self._data = []
         for i in range(1, len(content)):
             character_data = content[i][1].split(" ")
-            character_dict = dict()
+            image = cv2.imread(os.path.join(image_path, character_data[i][0]+".jpg"))
+            characters = []
             for j in range(len(character_data)//5):
-                character_dict[character_data[j*5]] = character_data[j*5+1:j*5+5]
-            image_dict[content[i][0]] = character_dict
-            
-        self._data = []
-        for filename in image_dict:
-            image = cv2.imread(os.path.join(image_path, filename+".jpg"))
-            self._data.append(Entry(image, image_dict[filename],filename))
-            
+                characters.append(Character(image, *character_data[j*5:character_data[j*5]+5]))
+            self._data.append(Entry(image, characters, character_data[i][0]))
+        
     @property
     def data:
         return self._data
