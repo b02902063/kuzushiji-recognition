@@ -4,12 +4,16 @@ import os
 import csv
 
 
-def cut_image(image, x, y ,height, width):
+def cut_image(image, x, y, height, width):
+    x = int(x)
+    y = int(y)
+    height = int(height)
+    width = int(width)
     return image[y:y+width, x:x+height]
 
 class Character:
 
-    def __init__(self, name, whole_image, x, y, height, width):
+    def __init__(self, whole_image, name, x, y, height, width):
         self._image = cut_image(whole_image, x, y, height, width)
         self._x = x
         self._y = y
@@ -43,10 +47,13 @@ class Character:
 
 class Entry:
     
-    def __init__(self, image, characters, fileanme):
+    def __init__(self, image, characters, filename):
         self._image = image
         self._characters = characters
         self._filename = filename
+
+    def __iter__(self):
+        return self._characters.__iter__()
         
     @property
     def characters(self):
@@ -94,15 +101,19 @@ class DataReader:
         self._data = []
         for i in range(1, len(content)):
             character_data = content[i][1].split(" ")
-            image = cv2.imread(os.path.join(image_path, character_data[i][0]+".jpg"))
+            image = cv2.imread(os.path.join(image_path, content[i][0]+".jpg"))
             characters = []
             for j in range(len(character_data)//5):
-                characters.append(Character(image, *character_data[j*5:character_data[j*5]+5]))
-            self._data.append(Entry(image, characters, character_data[i][0]))
+                characters.append(Character(image, *character_data[j*5:j*5+5]))
+            self._data.append(Entry(image, characters, content[i][0]+".jpg"))
+            print("Data processing progress: {0}/{1}".format(i, len(content)-1))
         
     @property
-    def data:
+    def data(self):
         return self._data
+
+    def __iter__(self):
+        return self._data.__iter__()
             
             
             
