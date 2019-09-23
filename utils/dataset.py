@@ -84,8 +84,8 @@ def get_dataset(dirpath, csvpath, padded_width, padded_height, batch_size, max_n
 
     label_ds = tf.data.Dataset.from_tensor_slices(tf.cast(labels, tf.int64))
 
-    image_label_ds = tf.data.Dataset.zip((image_ds, label_ds))
-    ds = image_label_ds.shuffle(buffer_size=len(labels))
+    ds = tf.data.Dataset.zip((image_ds, label_ds))
+    ds = ds.shuffle(buffer_size=5)
     ds = ds.repeat()
     ds = ds.batch(batch_size)
     ds = ds.prefetch(buffer_size=AUTOTUNE)
